@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.*;
  */
 public class wAngle {
 
-	private final double kP, kI, kD;
+	private final double kP;
 	private CANTalon talon;
 	private AnalogInput encoder;
 	private double setpoint;
@@ -20,11 +20,9 @@ public class wAngle {
 	/*
 	 * Initialize stuff
 	 */
-	public wAngle(double p, double i, double d, CANTalon tal, AnalogInput ai)
+	public wAngle(double p, CANTalon tal, AnalogInput ai)
 	{
 		kP = p;
-		kI = i;
-		kD = d;
 		talon = tal;
 		encoder = ai;	
 	}
@@ -58,8 +56,8 @@ public class wAngle {
 		out -= setpoint; 
 		while(out > 180)
 			out -= 360;
-		while(out < -2.5) //corrects for looping around
-			out += 5;
+		while(out < -180) //corrects for looping around
+			out += 360;
 		
 		return out;
 	}
@@ -70,9 +68,7 @@ public class wAngle {
 	{
 		double err = getError(); //(-180..180)
 		double aP = kP * err;
-		double aI = 0;
-		double aD = 0;
-		double out = aP + aI + aD;
+		double out = aP;
 		
 		runWheel(out); //cannot go below 0, upper limit based on PID constants
 	}
