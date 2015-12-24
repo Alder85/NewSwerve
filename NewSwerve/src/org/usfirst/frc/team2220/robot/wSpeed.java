@@ -12,7 +12,8 @@ public class wSpeed {
 	private CANTalon talon;
 	private Encoder encoder;
 	private boolean reversed = false;
-	private double cap = 1.0;
+	private boolean inputReversed = false;
+	private double cap = .5;
 	private Timer time = new Timer();
 	
 	/*
@@ -27,7 +28,27 @@ public class wSpeed {
 	
 	public double getError()
 	{
-		return desiredRPS - currentRPS;
+		startRPS();
+		Timer.delay(0.005);	
+		endRPS();
+		double temp = desiredRPS - currentRPS;
+		if(inputReversed)
+			return -temp;
+		return temp;
+	}
+	
+	public double getRPS()
+	{
+		
+		startRPS();
+		Timer.delay(0.005);	
+		endRPS();
+		return currentRPS;
+	}
+	
+	public double getTalonSpeed()
+	{
+		return talon.get();
 	}
 	
 	public void calculate()
@@ -35,15 +56,28 @@ public class wSpeed {
 		plusM = getError() * kP;
 		runWheel(talon.get() + plusM);
 	}
+	public void reverse()
+	{
+		reversed = !reversed;
+	}
 	
 	public void runWheel(double val)
 	{
+		
 		if(val > cap)
-			val = cap; 
+			val = cap;
+		else if(val < -cap)
+			val = -cap;
+			
 		if(!reversed)
 			talon.set(val);
 		else
 			talon.set(-val);
+	}
+	
+	public void reverseInput()
+	{
+		inputReversed = !inputReversed;
 	}
 	
 	public void setRPS(double in)

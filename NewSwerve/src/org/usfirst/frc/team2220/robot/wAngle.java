@@ -40,7 +40,7 @@ public class wAngle {
 	 */
 	public void setOffset(double x)
 	{
-		offset = x;
+		offset = -x;
 	}
 	
 	
@@ -50,7 +50,11 @@ public class wAngle {
 	 */
 	public double getError()
 	{
-		double out = encoder.getAverageVoltage();
+		double out = encoder.getAverageVoltage() + offset;
+		if(out > 5)
+			out -= 5;
+		if(out < -5);
+			out += 5;
 		out -= 2.5;
 		out *= 72; //scaling
 		out -= setpoint; 
@@ -84,6 +88,11 @@ public class wAngle {
 			talon.set(val);
 		else
 			talon.set(-val);
+	}
+	
+	public double getTalonSpeed()
+	{
+		return talon.get();
 	}
 	/*
 	 * kinda obvious
