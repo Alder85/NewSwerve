@@ -135,7 +135,7 @@ public class Robot extends SampleRobot {
 	double ws1, ws2, ws3, ws4;
 	double wa1, wa2, wa3, wa4;
 	double max;
-	double curveRate = 1;
+	double curveRate = 8.5;
 	double deadZone = 0.15;
 	
 	public boolean withinDeadZone(double x)
@@ -184,19 +184,19 @@ public class Robot extends SampleRobot {
     	wa3 = Math.atan2(a, d) * 180 / Math.PI;
     	wa4 = Math.atan2(a, c) * 180 / Math.PI;
     	
-    	///////////////////
+    	/////////////////// 
     	//		         //
-        // 2(FL)   1(FR) //
+        // 3(FL)   4(FR) //
         //               //
-        // 3(BL)   4(BR) //
+        // 2(BL)   1(BR) //
         //               //
     	///////////////////
     	if( !(withinDeadZone(fwd) && withinDeadZone(str) && withinDeadZone(rcw)) )
     	{
-	    	angle_fr.setSetpoint(wa1);
-	    	angle_fl.setSetpoint(wa2);
-	    	angle_bl.setSetpoint(wa3);
-	    	angle_br.setSetpoint(wa4);
+	    	angle_fr.setSetpoint(wa4);
+	    	angle_fl.setSetpoint(wa3);
+	    	angle_bl.setSetpoint(wa2);
+	    	angle_br.setSetpoint(wa1);
     	}
     	
     	angle_fr.calculate();

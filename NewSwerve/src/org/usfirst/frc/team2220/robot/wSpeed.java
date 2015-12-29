@@ -13,7 +13,7 @@ public class wSpeed {
 	private Encoder encoder;
 	private boolean reversed = false;
 	private boolean inputReversed = false;
-	private double cap = .5;
+	private double cap = 1.0;
 	private Timer time = new Timer();
 	
 	/*
