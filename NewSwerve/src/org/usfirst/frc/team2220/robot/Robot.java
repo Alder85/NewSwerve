@@ -124,7 +124,88 @@ public class Robot extends SampleRobot {
     	board.putNumber("FR_sTalon", speed_fr.getTalonSpeed());
     }
 
-   
+    public double sqr(double x)
+    {
+    	return Math.pow(x, 2);
+    }
+    double fwd, str, rcw;
+	final double L = 5, W = 5; //base is square, so it doesn't matter
+	final double R = Math.sqrt(50); //sqrt(l^2+w^2)
+	double a, b, c, d;
+	double ws1, ws2, ws3, ws4;
+	double wa1, wa2, wa3, wa4;
+	double max;
+	double curveRate = 1;
+	double deadZone = 0.15;
+	
+	public boolean withinDeadZone(double x)
+	{
+		return (x > -deadZone) && (x < deadZone);
+	}
+	public void updateSwerveVals()
+	{
+		fwd = stick.getRawAxis(1) * -1;
+		str = stick.getRawAxis(0) * -1;
+		rcw = stick.getRawAxis(5);
+		
+		
+		
+		a = str - rcw;
+    	b = str + rcw;
+    	c = fwd - rcw;
+    	d = fwd + rcw;
+    	
+    	ws1 = Math.sqrt(sqr(b) + sqr(c));
+    	ws2 = Math.sqrt(sqr(b) + sqr(d));
+    	ws3 = Math.sqrt(sqr(a) + sqr(d));
+    	ws4 = Math.sqrt(sqr(a) + sqr(c));
+    	
+    	max=ws1; 
+    	if(ws2>max)
+    		max=ws2; 
+    	if(ws3>max)
+    		max=ws3; 
+    	if(ws4>max)
+    		max=ws4;
+    	if(max>1)
+    	{
+    		ws1/=max; 
+    		ws2/=max; 
+    		ws3/=max;   //all in range 0 to 1
+    		ws4/=max;
+    	} 
+    	ws1*=curveRate;
+    	ws2*=curveRate;
+    	ws3*=curveRate;
+    	ws4*=curveRate;
+    	
+    	wa1 = Math.atan2(b, c) * 180 / Math.PI;
+    	wa2 = Math.atan2(b, d) * 180 / Math.PI;  //-180 to 180
+    	wa3 = Math.atan2(a, d) * 180 / Math.PI;
+    	wa4 = Math.atan2(a, c) * 180 / Math.PI;
+    	
+    	///////////////////
+    	//		         //
+        // 2(FL)   1(FR) //
+        //               //
+        // 3(BL)   4(BR) //
+        //               //
+    	///////////////////
+    	if( !(withinDeadZone(fwd) && withinDeadZone(str) && withinDeadZone(rcw)) )
+    	{
+	    	angle_fr.setSetpoint(wa1);
+	    	angle_fl.setSetpoint(wa2);
+	    	angle_bl.setSetpoint(wa3);
+	    	angle_br.setSetpoint(wa4);
+    	}
+    	
+    	angle_fr.calculate();
+    	angle_fl.calculate();
+    	angle_bl.calculate();
+    	angle_br.calculate();
+	
+	}
+    
     /**
      * Drive left & right motors for 2 seconds then stop
      */
@@ -145,7 +226,8 @@ public class Robot extends SampleRobot {
     	
         while (isOperatorControl() && isEnabled()) {
         	dashboardFL();
-        	
+        	updateSwerveVals();
+        	/*
         	tempScale = stick.getRawAxis(5);
         	tempScale *= 180;
             angle_fr.setSetpoint(tempScale);
@@ -156,6 +238,7 @@ public class Robot extends SampleRobot {
         	speed_fr.setRPS(tempScale2);
         	speed_fr.calculate();
         	board.putNumber("Potatoe", ai_fr.getAverageVoltage());
+        	*/
             Timer.delay(0.005);		// wait for a motor update time
         }
     }
