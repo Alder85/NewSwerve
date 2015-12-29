@@ -203,6 +203,16 @@ public class Robot extends SampleRobot {
     	angle_fl.calculate();
     	angle_bl.calculate();
     	angle_br.calculate();
+    	
+    	speed_fr.setRPS(-ws1);
+    	speed_fl.setRPS(-ws2);
+    	speed_bl.setRPS(-ws3);
+    	speed_br.setRPS(-ws4);
+    	
+    	speed_fr.calculate();
+    	speed_fl.calculate();
+    	speed_bl.calculate();
+    	speed_br.calculate();
 	
 	}
     
